@@ -43,5 +43,5 @@ export const fetchDLQ = async (token: string) => {
 }
 
 export const replayDlqEvent = async (token: string, eventId: string) => {
-    return secureFetch('dlq/replay/${eventId}', token, { method: 'POST'});
+    return secureFetch(`dlq/replay/${eventId}`, token, { method: 'POST'});
 }

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useAuth } from '../context/AuthContext';
-import { type TelemetryEndpoint } from "../lib/api";
+import { fetchDLQ, replayDlqEvent, type TelemetryEndpoint } from "../lib/api";
 
 export interface DlqEndpoint extends TelemetryEndpoint {
     error_message: string;
@@ -22,14 +22,7 @@ export const useDlq = () => {
 
             try {
                 setIsLoading(true);
-                const response = await fetch('http://localhost:3000/api/v1/dlq', {
-                    headers: {'Authorization': `Bearer ${token}`}
-                });
-
-                if (!response.ok)
-                    throw new Error('Failed to fetch DLQ events!');
-
-                const data = await response.json();
+                const data = await fetchDLQ(token);
 
                 setDlqEvents(data);
             } 
@@ -50,10 +43,7 @@ export const useDlq = () => {
             return false;
 
         try {
-            const response = await fetch(`http://localhost:3000/api/v1/dlq/replay/${eventId}`, {
-                method: "POST",
-                headers: { 'Authorization': `Bearer ${token}`}
-            });
+            const response = await replayDlqEvent(token, eventId);
 
             if (!response.ok)
                 throw new Error("Replay failed on server!");
