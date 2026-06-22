@@ -2,6 +2,8 @@ import { useState } from 'react'
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { Login } from './pages/Login';
+import { EventsDashboard } from './pages/EventsDashboard';
+import { DlqDashboard } from './pages/DlqDashboard';
 import './App.css'
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
@@ -16,14 +18,6 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   return <>{children}</>;
 };
 
-const EndpointsPlaceholder = () => (
-
-  <div className="p-8 min-h-screen bg-background">
-    <h1 className="text-2xl font-bold">InGress Endpoints Dashboard</h1>
-    <p className="text-muted-foreground mt-2">Authentication successful. Data Engine pending.</p>
-  </div>
-);
-
 export const App = () => {
 
   return (
@@ -36,16 +30,23 @@ export const App = () => {
 
           {/* Protected routes */}
           <Route 
-          path="/endpoints" 
+          path="/events" 
           element={
+            
           <ProtectedRoute>
-            <EndpointsPlaceholder />
+            <EventsDashboard />
           </ProtectedRoute>
-        } 
-        />
+          } />
+          <Route
+            path="/dlq"
+            element={
+              <ProtectedRoute>
+                <DlqDashboard />
+              </ProtectedRoute>
+            } />
 
         {/* Fallback Redirect */}
-        <Route path="*" element={<Navigate to="/endpoints" replace />} />
+        <Route path="*" element={<Navigate to="/events" replace />} />
         </Routes>
       </BrowserRouter>
     </AuthProvider>
