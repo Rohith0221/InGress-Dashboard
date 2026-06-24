@@ -1,37 +1,52 @@
 import { useState } from 'react';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../hooks/auth/useAuth';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
-import { Shield } from 'lucide-react';
+import { Shield, Loader2 } from 'lucide-react';
 
 export const Login = () => {
 
     const [secretKey, setSecretKey] = useState('');
     const [error, setError] = useState('');
-    const { login } = useAuth();
+    const [isAuthenticating, setIsAuthenticating] = useState(false);
+    const {  login } = useAuth();
 
     const navigate = useNavigate();
     const location = useLocation();
 
     const origin = location.state?.from?.pathname || '/endpoints';
 
-    const handleLogin = (e: React.FormEvent) => {
+    const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
+        setError('');
 
-        if (secretKey.length > 20) {
-            login(secretKey);
-            navigate(origin, { replace: true });
-        } else {
-            alert("Invalid Admin Key Format");
-            setError("Admin key must be at least 20 characters long!");
+        if (secretKey.length < 5) {
+            setError("Admin password is too short.");
             return;
+
+        } 
+        
+        try {
+            setIsAuthenticating(true);
+
+            await new Promise(resolve => setTimeout(resolve, 800));
+
+            await login(secretKey);
+
+            navigate(origin, { replace: true });
+
+        }
+        catch (error: any) {
+
+            setError(error.message || "Failed to authenticate with server. Try again later");
+            setIsAuthenticating(false);
         }
     };
 
     return (
-        <div className="min-h-screen w-full max-w-screen-md flex flex-col items-center justify-center bg-slate-50 space-y-6">
-            <div className="w-full max-w-md p-8 space-y-6 bg-white rounded-xl shadow-sm border border-slate-200">
+        <div className="min-h-screen w-full flex flex-col items-center justify-center bg-slate-50 space-y-6">
+            <div className="w-full max-w-md p-8 space-y-6 bg-white rounded-lg shadow-sm border border-slate-200">
                 <div className="flex justify-center items-center space-y-2">
                     <Shield className="w-10 h-10 text-black" />
                 </div>
@@ -58,8 +73,15 @@ export const Login = () => {
                     )}
                     </div>
 
-                    <Button type="submit" className="w-full">
-                        Authenticate
+                    <Button type="submit" disabled={isAuthenticating} className="w-full flex items-center justify-center text-white py-2 rounded-md hover:bg-grey-500 disabled:opacity-70 transition-all">
+                        {isAuthenticating ? (
+                            <>
+                                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                                Decrypting Session...
+                            </>
+                        ): (
+                            "Access Engine"
+                        )}
                     </Button>
             </form>
         </div>

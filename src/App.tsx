@@ -1,17 +1,19 @@
 import { useState } from 'react'
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
-import { AuthProvider, useAuth } from './context/AuthContext';
+import { AuthProvider} from './context/AuthContext';
+import { useAuth } from './hooks/auth/useAuth';
 import { Login } from './pages/Login';
 import { EventsDashboard } from './pages/EventsDashboard';
 import { DlqDashboard } from './pages/DlqDashboard';
+import { DashboardLayout } from './components/ui/DashboardLayout';
 import './App.css'
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 
-  const { token } = useAuth();
+  const { isAuthenticated } = useAuth();
   const location = useLocation();
 
-  if (!token) {
+  if (!isAuthenticated) {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
@@ -34,14 +36,18 @@ export const App = () => {
           element={
             
           <ProtectedRoute>
-            <EventsDashboard />
+            <DashboardLayout>
+              <EventsDashboard />
+            </DashboardLayout>
           </ProtectedRoute>
           } />
           <Route
             path="/dlq"
             element={
               <ProtectedRoute>
-                <DlqDashboard />
+                <DashboardLayout>
+                  <DlqDashboard />
+                </DashboardLayout>
               </ProtectedRoute>
             } />
 

@@ -1,10 +1,8 @@
 import { useState, useEffect } from 'react';
 import { fetchEvents, type TelemetryEndpoint } from '../lib/api';
-import { useAuth } from '../context/AuthContext';
 
 export const useEvents = () => {
 
-    const { token } = useAuth();
     const [data, setData] = useState<TelemetryEndpoint[]>([]);
 
     const [isLoading, setIsLoading] = useState(true);
@@ -12,16 +10,12 @@ export const useEvents = () => {
 
     useEffect(() => {
 
-        if (!token) {
-            setIsLoading(false);
-            return;
-        }
 
         const loadData = async () => {
             try {
                 setIsLoading(true);
 
-                const result = await fetchEvents(token);
+                const result = await fetchEvents();
                 setData(result);
                 setError(null);
             }
@@ -34,7 +28,7 @@ export const useEvents = () => {
         };
 
         loadData();
-    }, [token]);
+    }, []);
 
     return { data, isLoading, error };
 };

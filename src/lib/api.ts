@@ -9,13 +9,13 @@ export interface TelemetryEndpoint {
 
 const API_BASE_URL = "http://localhost:3000/api/v1";
 
-const secureFetch = async (endpoint: string, token: string, options: RequestInit = {}) => {
+const secureFetch = async (endpoint: string, options: RequestInit = {}) => {
 
     const response = await fetch(`${API_BASE_URL}/${endpoint}`, {
         ...options,
+        credentials: 'include',
         headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`,
             ...options.headers,
         }
     });
@@ -33,15 +33,15 @@ const secureFetch = async (endpoint: string, token: string, options: RequestInit
 
 };
 
-export const fetchEvents = async (token: string) => {
-    return secureFetch('events', token);
+export const fetchEvents = async () => {
+    return secureFetch('events');
 };
 
-export const fetchDLQ = async (token: string) => {
+export const fetchDLQ = async () => {
 
-    return secureFetch('dlq', token);
+    return secureFetch('dlq');
 }
 
-export const replayDlqEvent = async (token: string, eventId: string) => {
-    return secureFetch(`dlq/replay/${eventId}`, token, { method: 'POST'});
+export const replayDlqEvent = async (eventId: string) => {
+    return secureFetch(`dlq/replay/${eventId}`, { method: 'POST'});
 }
