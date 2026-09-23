@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { AuthProvider} from './context/AuthContext';
 import { useAuth } from './hooks/auth/useAuth';
@@ -6,6 +5,7 @@ import { Login } from './pages/Login';
 import { EventsDashboard } from './pages/EventsDashboard';
 import { DlqDashboard } from './pages/DlqDashboard';
 import { DashboardLayout } from './components/ui/DashboardLayout';
+import { EndpointsPage } from './pages/Endpoints';
 import './App.css'
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
@@ -50,6 +50,14 @@ export const App = () => {
                 </DashboardLayout>
               </ProtectedRoute>
             } />
+        
+        <Route path="/endpoints" element={
+          <ProtectedRoute>
+            <DashboardLayout>
+              <EndpointsPage />
+            </DashboardLayout>
+          </ProtectedRoute>
+        } />
 
         {/* Fallback Redirect */}
         <Route path="*" element={<Navigate to="/events" replace />} />

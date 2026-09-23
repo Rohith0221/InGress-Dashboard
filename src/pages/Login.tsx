@@ -30,16 +30,16 @@ export const Login = () => {
         try {
             setIsAuthenticating(true);
 
-            await new Promise(resolve => setTimeout(resolve, 800));
-
             await login(secretKey);
 
             navigate(origin, { replace: true });
 
         }
-        catch (error: any) {
-
-            setError(error.message || "Failed to authenticate with server. Try again later");
+        catch (error: unknown) {
+            const message = error instanceof Error
+                ? error.message
+                : "Failed to authenticate with server. Try again later.";
+            setError(message);
             setIsAuthenticating(false);
         }
     };

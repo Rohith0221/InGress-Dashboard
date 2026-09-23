@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/auth/useAuth';
-import { Activity, AlertOctagon, LogOut, Loader2 } from 'lucide-react';
+import { Activity, AlertOctagon, LogOut, Loader2, Webhook } from 'lucide-react';
 
 export const DashboardLayout = ({children}: { children: React.ReactNode }) => {
 
@@ -41,6 +41,14 @@ export const DashboardLayout = ({children}: { children: React.ReactNode }) => {
                             >
                                 <AlertOctagon className="w-5 h-5" />
                                 <span className="font-medium">Dead Letter Queue (DLQ) </span>
+                            </Link>
+                        
+                        <Link 
+                            to="/endpoints"
+                            className={`flex items-center space-x-3 px-4 py-3 rounded-md transition-colors ${location.pathname === '/endpoints' ? 'bg-black text-white' : 'hover:bg-slate-950'}`}
+                            >
+                                <Webhook className="w-5 h-5" />
+                                <span className="font-medium">Endpoints</span>
                             </Link>
                     </nav>
                 </div>
